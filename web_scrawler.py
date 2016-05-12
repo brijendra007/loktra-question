@@ -1,5 +1,6 @@
 import requests
 import sys
+import re
 from bs4 import BeautifulSoup
 
 def text_scrapper(keyword,page_number=None):
@@ -7,10 +8,11 @@ def text_scrapper(keyword,page_number=None):
         url='http://www.shopping.com/products~PG-'+str(page_number)+'?KW='+str(keyword)
         source_code=requests.get(url);
         plain_text=source_code.text
-        print plain_text
         soup = BeautifulSoup(plain_text)
-        for product in soup.findAll('a',{'class':'productName'}):
-           print product
+        for producttitle in soup.findAll('span',{'id':re.compile('nameQA.*')}):
+           print producttitle.get('title')
+        results=soup.find('span',{'class':'numTotalResults'}).text
+        print results   
     else:  #its for Query 1  
         url='http://www.shopping.com/products?KW=' + str(keyword)
         source_code=requests.get(url);
